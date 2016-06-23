@@ -19,3 +19,5 @@ RUN curl https://storage.googleapis.com/golang/go${GOVERSION}.linux-amd64.tar.gz
 ENV GOPATH /gopath
 ENV GOROOT /goroot
 ENV PATH $GOROOT/bin:$GOPATH/bin:$PATH
+
+RUN curl -L https://raw.githubusercontent.com/hipchat/hipchat-cli/master/hipchat_room_message > /usr/local/bin/hipchat_room_message && chmod a+x /usr/local/bin/hipchat_room_message
