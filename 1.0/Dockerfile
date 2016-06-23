@@ -8,6 +8,9 @@ RUN apt-get update -y && apt-get install --no-install-recommends -y -q \
                          git mercurial bzr \
                && rm -rf /var/lib/apt/lists/*
 
+ENV CF_VERSION 6.19.0
+RUN curl -L -S "https://cli.run.pivotal.io/stable?release=linux64-binary&version=${CF_VERSION}" | tar xzf - -C /usr/local/bin
+    
 ENV GOVERSION 1.6
 RUN mkdir /goroot && mkdir /gopath
 RUN curl https://storage.googleapis.com/golang/go${GOVERSION}.linux-amd64.tar.gz \
@@ -15,3 +18,4 @@ RUN curl https://storage.googleapis.com/golang/go${GOVERSION}.linux-amd64.tar.gz
 
 ENV GOPATH /gopath
 ENV GOROOT /goroot
+ENV PATH $GOROOT/bin:$GOPATH/bin:$PATH
