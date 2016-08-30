@@ -14,6 +14,7 @@ Dockerfile for CI. This may not be useful for you.
 `rakutentech/ci` image support below tags. Link is its `Dockerfile`. 
 
 - [`1.0` (1.0/Dockerfile)](1.0/Dockerfile)
+- [`1.1` (1.1/Dockerfile)](1.1/Dockerfile)
 
 ## Author
 
