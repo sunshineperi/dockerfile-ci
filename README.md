@@ -7,7 +7,7 @@ Dockerfile-ci
 [LICENSE]: https://github.com/rakutentech/dockerfile-ci/blob/master/LICENCE
 [dockerhub]: https://hub.docker.com/r/rakutentech/ci/
 
-Dockerfile for CI. This may not be useful for you.
+Dockerfile for CI. This likely won't be very useful for you.
 
 ## Supported tags
 
@@ -15,6 +15,7 @@ Dockerfile for CI. This may not be useful for you.
 
 - [`1.0` (1.0/Dockerfile)](1.0/Dockerfile)
 - [`1.1` (1.1/Dockerfile)](1.1/Dockerfile)
+- [`1.2` (1.2/Dockerfile)](1.2/Dockerfile)
 
 ## Author
 
