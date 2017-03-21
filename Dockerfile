@@ -49,7 +49,7 @@ ENV CF_VERSION 6.25.0
 RUN curl -L -S "https://cli.run.pivotal.io/stable?release=linux64-binary&version=${CF_VERSION}" | tar xzf - -C /usr/local/bin
 
 ENV BOSHCLI_VERSION 1.3262.26.0
-RUN /bin/bash -l -c "gem install bosh_cli -v ${BOSHCLI_VERSION}"
+RUN eval "$(~/.rbenv/bin/rbenv init -)" && gem install bosh_cli --no-ri --no-rdoc -v ${BOSHCLI_VERSION}
 
 RUN curl -L https://raw.githubusercontent.com/hipchat/hipchat-cli/master/hipchat_room_message > /usr/local/bin/hipchat_room_message && \
     chmod a+x /usr/local/bin/hipchat_room_message
