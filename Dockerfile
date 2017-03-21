@@ -37,7 +37,6 @@ RUN curl -L https://raw.githubusercontent.com/hipchat/hipchat-cli/master/hipchat
 ENV RUBY_VERSION 2.3.3
 RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv && \
     git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build && \
-    echo 'eval "$(~/.rbenv/bin/rbenv init -)"' >> ~/.profile && \
     echo 'eval "$(~/.rbenv/bin/rbenv init -)"' >> ~/.bashrc && \
     ~/.rbenv/bin/rbenv install ${RUBY_VERSION} && \
     ~/.rbenv/bin/rbenv global ${RUBY_VERSION}
