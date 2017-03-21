@@ -7,6 +7,9 @@ RUN apt-get update -y && \
         wget \
         zip \
         build-essential \
+        libssl-dev \
+        libreadline-dev \
+        zlib1g-dev \
         ca-certificates \
         git \
         mercurial \
@@ -32,5 +35,10 @@ ENV PATH $PATH:$GOROOT/bin:$GOPATH/bin
 RUN curl -L https://raw.githubusercontent.com/hipchat/hipchat-cli/master/hipchat_room_message > /usr/local/bin/hipchat_room_message && chmod a+x /usr/local/bin/hipchat_room_message
 
 ENV RUBY_VERSION 2.3.3
-RUN curl -sSL https://get.rvm.io | bash -s stable
-RUN /bin/bash -l -c "rvm requirements && rvm install ${RUBY_VERSION} && rvm use --default ${RUBY_VERSION} && gem install bundler --no-ri --no-rdoc"
+#RUN curl -sSL https://get.rvm.io | bash -s stable
+#RUN /bin/bash -l -c "rvm requirements && rvm install ${RUBY_VERSION} && rvm use --default ${RUBY_VERSION} && gem install bundler --no-ri --no-rdoc"
+RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv && \
+    git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build && \
+    echo 'eval "$(~/.rbenv/bin/rbenv init -)"' >> ~/.bashrc && \
+    ~/.rbenv/bin/rbenv install 2.3.3 && \
+    ~/.rbenv/bin/rbenv global 2.3.3
