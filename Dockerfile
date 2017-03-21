@@ -26,7 +26,7 @@ RUN curl -L -S "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION
 ENV CF_VERSION 6.25.0
 RUN curl -L -S "https://cli.run.pivotal.io/stable?release=linux64-binary&version=${CF_VERSION}" | tar xzf - -C /usr/local/bin
 
-ENV GO_VERSION 1.7.5
+ENV GO_VERSION 1.8
 ENV GOPATH /gopath
 ENV GOROOT /goroot
 RUN mkdir -p $GOROOT && mkdir -p $GOPATH
