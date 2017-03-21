@@ -19,12 +19,12 @@ RUN apt-get update -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
 
-ENV JQ_VERSION 1.5
-RUN curl -L -S "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" >/usr/local/bin/jq && \
-    chmod a+x /usr/local/bin/jq
-
-ENV CF_VERSION 6.25.0
-RUN curl -L -S "https://cli.run.pivotal.io/stable?release=linux64-binary&version=${CF_VERSION}" | tar xzf - -C /usr/local/bin
+ENV RUBY_VERSION 2.3.3
+RUN git clone --depth 1 https://github.com/rbenv/rbenv.git ~/.rbenv && \
+    git clone --depth 1 https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build && \
+    echo 'eval "$(~/.rbenv/bin/rbenv init -)"' >> ~/.bashrc && \
+    ~/.rbenv/bin/rbenv install ${RUBY_VERSION} && \
+    ~/.rbenv/bin/rbenv global ${RUBY_VERSION}
 
 ENV GO_VERSION 1.8
 ENV GOPATH /gopath
@@ -33,15 +33,23 @@ RUN mkdir -p $GOROOT && mkdir -p $GOPATH
 RUN curl https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz | tar xvzf - -C $GOROOT --strip-components=1
 ENV PATH $PATH:$GOROOT/bin:$GOPATH/bin
 
-RUN curl -L https://raw.githubusercontent.com/hipchat/hipchat-cli/master/hipchat_room_message > /usr/local/bin/hipchat_room_message && \
-    chmod a+x /usr/local/bin/hipchat_room_message
+ENV JQ_VERSION 1.5
+RUN curl -L -S "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" >/usr/local/bin/jq && \
+    chmod a+x /usr/local/bin/jq
 
-ENV RUBY_VERSION 2.3.3
-RUN git clone --depth 1 https://github.com/rbenv/rbenv.git ~/.rbenv && \
-    git clone --depth 1 https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build && \
-    echo 'eval "$(~/.rbenv/bin/rbenv init -)"' >> ~/.bashrc && \
-    ~/.rbenv/bin/rbenv install ${RUBY_VERSION} && \
-    ~/.rbenv/bin/rbenv global ${RUBY_VERSION}
+ENV SPIFF_VERSION 1.0.7
+RUN curl -L -S "https://github.com/cloudfoundry-incubator/spiff/releases/download/v${SPIFF_VERSION}/spiff_linux_amd64" >/usr/local/bin/spiff && \
+    chmod a+x /usr/local/bin/spiff
+
+ENV SPRUCE_VERSION 1.8.13
+RUN curl -L -S "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" >/usr/local/bin/spruce && \
+    chmod a+x /usr/local/bin/spruce
+
+ENV CF_VERSION 6.25.0
+RUN curl -L -S "https://cli.run.pivotal.io/stable?release=linux64-binary&version=${CF_VERSION}" | tar xzf - -C /usr/local/bin
 
 ENV BOSHCLI_VERSION 1.3262.26.0
 RUN /bin/bash -l -c "gem install bosh_cli -v ${BOSHCLI_VERSION}"
+
+RUN curl -L https://raw.githubusercontent.com/hipchat/hipchat-cli/master/hipchat_room_message > /usr/local/bin/hipchat_room_message && \
+    chmod a+x /usr/local/bin/hipchat_room_message
