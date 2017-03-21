@@ -46,7 +46,7 @@ RUN curl -L -S "https://github.com/geofffranks/spruce/releases/download/v${SPRUC
     chmod a+x /usr/local/bin/spruce
 
 ENV CF_VERSION 6.25.0
-RUN curl -L -S "https://cli.run.pivotal.io/stable?release=linux64-binary&version=${CF_VERSION}" | tar xzf - -C /usr/local/bin
+RUN curl -L -S "https://cli.run.pivotal.io/stable?release=linux64-binary&version=${CF_VERSION}" | tar -xC /usr/local/bin cf
 
 ENV BOSHCLI_VERSION 1.3262.26.0
 RUN eval "$(~/.rbenv/bin/rbenv init -)" && gem install bosh_cli --no-ri --no-rdoc -v ${BOSHCLI_VERSION}
