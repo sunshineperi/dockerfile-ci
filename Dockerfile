@@ -1,5 +1,7 @@
 FROM debian:jessie
 
+RUN echo "deb http://ftp.debian.org/debian jessie-backports main contrib" >> /etc/apt/sources.list
+
 RUN apt-get update -y && \
     apt-get install --no-install-recommends -y -q \
         procps \
@@ -7,6 +9,7 @@ RUN apt-get update -y && \
         wget \
         zip \
         build-essential \
+        linux-headers-$(uname -r|sed 's,[^-]*-[^-]*-,,') \
         libssl-dev \
         libreadline-dev \
         zlib1g-dev \
@@ -14,6 +17,7 @@ RUN apt-get update -y && \
         git \
         mercurial \
         bzr && \
+    apt-get --no-install-recommends -t jessie-backports install virtualbox && \
     apt-get --no-install-recommends dist-upgrade -y && \
     apt-get autoremove -y && \
     apt-get clean -y && \
@@ -52,6 +56,23 @@ RUN eval "$(~/.rbenv/bin/rbenv init -)" && \
 ENV BOSHCLI_VERSION 3.0.1
 RUN curl -L -S "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSHCLI_VERSION}-linux-amd64" >/usr/local/bin/bosh && \
     chmod a+x /usr/local/bin/bosh
+    
+RUN git clone --depth 1 https://github.com/cloudfoundry/bosh-deployment ~/bosh-deployment
+RUN mkdir -p ~/deployments/vbox && \
+    cd ~/deployments/vbox && \
+    bosh create-env ~/workspace/bosh-deployment/bosh.yml \
+      --state ./state.json \
+      -o ~/workspace/bosh-deployment/virtualbox/cpi.yml \
+      -o ~/workspace/bosh-deployment/virtualbox/outbound-network.yml \
+      -o ~/workspace/bosh-deployment/bosh-lite.yml \
+      -o ~/workspace/bosh-deployment/bosh-lite-runc.yml \
+      -o ~/workspace/bosh-deployment/jumpbox-user.yml \
+      --vars-store ./creds.yml \
+      -v director_name="bosh-lite" \
+      -v internal_ip=192.168.50.6 \
+      -v internal_gw=192.168.50.1 \
+      -v internal_cidr=192.168.50.0/24 \
+      -v outbound_network_name=NatNetwork
 
 RUN curl -L https://raw.githubusercontent.com/hipchat/hipchat-cli/master/hipchat_room_message > /usr/local/bin/hipchat_room_message && \
     chmod a+x /usr/local/bin/hipchat_room_message
