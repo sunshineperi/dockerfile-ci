@@ -2,8 +2,8 @@ FROM debian:jessie
 
 RUN echo "deb http://ftp.debian.org/debian jessie-backports main contrib" >> /etc/apt/sources.list
 
-RUN apt-get update -y && \
-    apt-get --no-install-recommends -y -q install \
+RUN apt-get update -y
+RUN apt-get --no-install-recommends -q install -y \
         procps \
         curl \
         wget \
@@ -16,10 +16,10 @@ RUN apt-get update -y && \
         ca-certificates \
         git \
         mercurial \
-        bzr && \
-    apt-get --no-install-recommends -y -q -t jessie-backports install virtualbox && \
-    apt-get --no-install-recommends -y dist-upgrade && \
-    apt-get autoremove -y && \
+        bzr
+RUN apt-get --no-install-recommends -q -t jessie-backports install -y virtualbox 
+RUN apt-get --no-install-recommends -y dist-upgrade
+RUN apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
 
