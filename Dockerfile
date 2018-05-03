@@ -9,7 +9,6 @@ RUN apt-get --no-install-recommends -q install -y \
         wget \
         zip \
         build-essential \
-        linux-headers-$(uname -r|sed 's,[^-]*-[^-]*-,,') \
         libssl-dev \
         libreadline-dev \
         zlib1g-dev \
@@ -18,6 +17,7 @@ RUN apt-get --no-install-recommends -q install -y \
         mercurial \
         bzr
 RUN apt-get --no-install-recommends -q -t jessie-backports install -y virtualbox 
+RUN apt-get --no-install-recommends -y install -f
 RUN apt-get --no-install-recommends -y dist-upgrade
 RUN apt-get autoremove -y && \
     apt-get clean -y && \
