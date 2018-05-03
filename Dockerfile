@@ -60,13 +60,13 @@ RUN curl -L -S "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSHCLI_V
 RUN git clone --depth 1 https://github.com/cloudfoundry/bosh-deployment ~/bosh-deployment
 RUN mkdir -p ~/deployments/vbox && \
     cd ~/deployments/vbox && \
-    bosh create-env ~/workspace/bosh-deployment/bosh.yml \
+    bosh create-env ~/bosh-deployment/bosh.yml \
       --state ./state.json \
-      -o ~/workspace/bosh-deployment/virtualbox/cpi.yml \
-      -o ~/workspace/bosh-deployment/virtualbox/outbound-network.yml \
-      -o ~/workspace/bosh-deployment/bosh-lite.yml \
-      -o ~/workspace/bosh-deployment/bosh-lite-runc.yml \
-      -o ~/workspace/bosh-deployment/jumpbox-user.yml \
+      -o ~/bosh-deployment/virtualbox/cpi.yml \
+      -o ~/bosh-deployment/virtualbox/outbound-network.yml \
+      -o ~/bosh-deployment/bosh-lite.yml \
+      -o ~/bosh-deployment/bosh-lite-runc.yml \
+      -o ~/bosh-deployment/jumpbox-user.yml \
       --vars-store ./creds.yml \
       -v director_name="bosh-lite" \
       -v internal_ip=192.168.50.6 \
