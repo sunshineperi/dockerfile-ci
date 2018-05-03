@@ -50,7 +50,7 @@ RUN eval "$(~/.rbenv/bin/rbenv init -)" && \
     gem install bundler:${BUNDLER_VERSION} --no-ri --no-rdoc
     
 ENV BOSHCLI_VERSION 3.0.1
-RUN RUN curl -L -S "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSHCLI_VERSION}-linux-amd64" >/usr/local/bin/bosh && \
+RUN curl -L -S "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSHCLI_VERSION}-linux-amd64" >/usr/local/bin/bosh && \
     chmod a+x /usr/local/bin/bosh
 
 RUN curl -L https://raw.githubusercontent.com/hipchat/hipchat-cli/master/hipchat_room_message > /usr/local/bin/hipchat_room_message && \
