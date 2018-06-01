@@ -11,6 +11,7 @@ RUN apt-get update -y && \
         libreadline-dev \
         zlib1g-dev \
         ca-certificates \
+        python-dev \
         git \
         mercurial \
         bzr && \
