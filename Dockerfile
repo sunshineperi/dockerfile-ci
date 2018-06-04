@@ -6,6 +6,7 @@ RUN apt-get update -y && \
         curl \
         wget \
         zip \
+        unzip \
         build-essential \
         libssl-dev \
         libreadline-dev \
@@ -56,3 +57,8 @@ RUN curl -L -S "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSHCLI_V
 
 RUN curl -L https://raw.githubusercontent.com/hipchat/hipchat-cli/master/hipchat_room_message > /usr/local/bin/hipchat_room_message && \
     chmod a+x /usr/local/bin/hipchat_room_message
+
+RUN curl -L -S "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
+    unzip awscli-bundle.zip && \
+    ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws && \
+    chmod a+x /usr/local/bin/aws
