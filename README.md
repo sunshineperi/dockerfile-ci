@@ -12,9 +12,8 @@ Dockerfile for the RPaaS CI pipelines.
 ## Supported tags
 
 See [`rakutentech/ci`][dockerhub] for a list of automatic builds.
-We currently build the tip of each branch. The corresponding docker hub tags
-are named as each branch (with the exception of the `master` branch, that is
-called `latest` on docker hub).
+We currently build the tip of `master` and all tags. The corresponding docker 
+hub tags are named as each git tag, while the `master` branch is called `latest`).
 
 ## Authors
 
