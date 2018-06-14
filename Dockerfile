@@ -34,7 +34,12 @@ ENV GOROOT /goroot
 RUN mkdir -p $GOROOT && mkdir -p $GOPATH
 RUN curl https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz | tar xvzf - -C $GOROOT --strip-components=1
 ENV PATH $PATH:$GOROOT/bin:$GOPATH/bin
+
+ENV GOX_VERSION 0.4.0
 RUN go get github.com/mitchellh/gox
+RUN cd $GOPATH/src/github.com/mitchellh/gox && \
+    git checkout v$GOX_VERSION && \
+    go install github.com/mitchellh/gox
 
 ENV JQ_VERSION 1.5
 RUN curl -L -S "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" >/usr/local/bin/jq && \
