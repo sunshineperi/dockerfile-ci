@@ -28,7 +28,7 @@ RUN git clone --depth 1 https://github.com/rbenv/rbenv.git ~/.rbenv && \
     ~/.rbenv/bin/rbenv install ${RUBY_VERSION} && \
     ~/.rbenv/bin/rbenv global ${RUBY_VERSION}
 
-ENV GO_VERSION 1.10.2
+ENV GO_VERSION 1.10.3
 ENV GOPATH /gopath
 ENV GOROOT /goroot
 RUN mkdir -p $GOROOT && mkdir -p $GOPATH
