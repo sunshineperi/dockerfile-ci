@@ -49,7 +49,7 @@ ENV SPRUCE_VERSION 1.17.0
 RUN curl -L -S "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" >/usr/local/bin/spruce && \
     chmod a+x /usr/local/bin/spruce
 
-ENV CF_VERSION 6.36.1
+ENV CF_VERSION 6.37.0
 RUN curl -L -S "https://cli.run.pivotal.io/stable?release=linux64-binary&version=${CF_VERSION}" | tar -xzC /usr/local/bin cf
 
 ENV BUNDLER_VERSION 1.16.1
