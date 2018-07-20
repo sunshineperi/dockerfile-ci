@@ -15,7 +15,8 @@ RUN apt-get update -y && \
         python-dev \
         git \
         mercurial \
-        bzr && \
+        bzr \
+        openssh-client && \
     apt-get --no-install-recommends dist-upgrade -y && \
     apt-get autoremove -y && \
     apt-get clean -y && \
