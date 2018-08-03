@@ -1,70 +1,94 @@
-FROM debian:jessie-slim
+FROM ubuntu:16.04
 
-RUN apt-get update -y && \
-    apt-get install --no-install-recommends -y -q \
-        procps \
-        curl \
-        wget \
-        zip \
-        unzip \
-        build-essential \
-        libssl-dev \
-        libreadline-dev \
-        zlib1g-dev \
-        ca-certificates \
-        python-dev \
-        git \
-        mercurial \
-        bzr \
-        openssh-client && \
-    apt-get --no-install-recommends dist-upgrade -y && \
-    apt-get autoremove -y && \
-    apt-get clean -y && \
-    rm -rf /var/lib/apt/lists/*
+# Application parameters and variables
+ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=3000
+ENV font_directory=/usr/share/fonts/noto
 
-ENV RUBY_VERSION 2.4.4
-RUN git clone --depth 1 https://github.com/rbenv/rbenv.git ~/.rbenv && \
-    git clone --depth 1 https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build && \
-    echo 'eval "$(~/.rbenv/bin/rbenv init -)"' >> ~/.bashrc && \
-    ~/.rbenv/bin/rbenv install ${RUBY_VERSION} && \
-    ~/.rbenv/bin/rbenv global ${RUBY_VERSION}
+# Build Args
+ARG USE_CHROME_STABLE
 
-ENV GO_VERSION 1.10.3
-ENV GOPATH /gopath
-ENV GOROOT /goroot
-RUN mkdir -p $GOROOT && mkdir -p $GOPATH
-RUN curl https://storage.googleapis.com/golang/go${GO_VERSION}.linux-amd64.tar.gz | tar xvzf - -C $GOROOT --strip-components=1
-ENV PATH $PATH:$GOROOT/bin:$GOPATH/bin
+# Configuration for Chrome
+ENV CONNECTION_TIMEOUT=60000
+ENV CHROME_PATH=/usr/bin/google-chrome
+ENV USE_CHROME_STABLE=${USE_CHROME_STABLE}
 
-ENV GOX_VERSION 0.4.0
-RUN go get -d github.com/mitchellh/gox
-RUN cd $GOPATH/src/github.com/mitchellh/gox && \
-    git checkout v$GOX_VERSION && \
-    go get github.com/mitchellh/gox
+RUN mkdir -p $font_directory
 
-ENV JQ_VERSION 1.5
-RUN curl -L -S "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64" >/usr/local/bin/jq && \
-    chmod a+x /usr/local/bin/jq
 
-ENV SPRUCE_VERSION 1.17.0
-RUN curl -L -S "https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64" >/usr/local/bin/spruce && \
-    chmod a+x /usr/local/bin/spruce
+# Dependencies needed for packages downstream
+RUN apt-get update && apt-get install -y \
+  chromium-codecs-ffmpeg \
+  unzip \
+  fontconfig \
+  locales \
+  gconf-service \
+  libasound2 \
+  libatk1.0-0 \
+  libc6 \
+  libcairo2 \
+  libcups2 \
+  libdbus-1-3 \
+  libexpat1 \
+  libfontconfig1 \
+  libgcc1 \
+  libgconf-2-4 \
+  libgdk-pixbuf2.0-0 \
+  libglib2.0-0 \
+  libgtk-3-0 \
+  libnspr4 \
+  libpango-1.0-0 \
+  libpangocairo-1.0-0 \
+  libstdc++6 \
+  libx11-6 \
+  libx11-xcb1 \
+  libxcb1 \
+  libxcomposite1 \
+  libxcursor1 \
+  libxdamage1 \
+  libxext6 \
+  libxfixes3 \
+  libxi6 \
+  libxrandr2 \
+  libxrender1 \
+  libxss1 \
+  libxtst6 \
+  ca-certificates \
+  fonts-liberation \
+  fonts-thai-tlwg \
+  libappindicator1 \
+  libnss3 \
+  lsb-release \
+  xdg-utils \
+  wget
 
-ENV CF_VERSION 6.37.0
-RUN curl -L -S "https://cli.run.pivotal.io/stable?release=linux64-binary&version=${CF_VERSION}" | tar -xzC /usr/local/bin cf
+# It's a good idea to use dumb-init to help prevent zombie chrome processes.
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 /usr/local/bin/dumb-init
+RUN chmod +x /usr/local/bin/dumb-init
 
-ENV BUNDLER_VERSION 1.16.1
-RUN eval "$(~/.rbenv/bin/rbenv init -)" && \
-    gem install bundler:${BUNDLER_VERSION} --no-ri --no-rdoc
-    
-ENV BOSHCLI_VERSION 3.0.1
-RUN curl -L -S "https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSHCLI_VERSION}-linux-amd64" >/usr/local/bin/bosh && \
-    chmod a+x /usr/local/bin/bosh
+# Install Node.js
+RUN apt-get install --yes curl &&\
+  curl --silent --location https://deb.nodesource.com/setup_8.x | bash - &&\
+  apt-get install --yes nodejs &&\
+  apt-get install --yes build-essential
 
-RUN curl -L https://raw.githubusercontent.com/hipchat/hipchat-cli/master/hipchat_room_message > /usr/local/bin/hipchat_room_message && \
-    chmod a+x /usr/local/bin/hipchat_room_message
+# Install emoji's
+RUN cd $font_directory &&\
+  wget https://github.com/emojione/emojione-assets/releases/download/3.1.2/emojione-android.ttf &&\
+  wget https://github.com/googlei18n/noto-cjk/blob/master/NotoSansCJKsc-Medium.otf?raw=true && \
+  fc-cache -f -v
 
-RUN curl -L -S "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
-    unzip awscli-bundle.zip && \
-    ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws && \
-    chmod a+x /usr/local/bin/aws
+# Install Chrome Stable when specified
+RUN if [ "$USE_CHROME_STABLE" = "true" ]; then \
+    cd /tmp &&\
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb &&\
+    dpkg -i google-chrome-stable_current_amd64.deb;\
+  fi
+
+# Build
+
+# Cleanup
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Expose the web-socket and HTTP ports
